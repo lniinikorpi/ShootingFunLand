@@ -48,7 +48,7 @@ public class PlayerShoot : MonoBehaviour
         if(_targetSet)
         {
             _bezierCurve.point1 = _muzzle.position;
-            Vector3 endPoint = _muzzle.forward.normalized * Vector3.Distance(_muzzle.position, _target);
+            Vector3 endPoint = _muzzle.position + _muzzle.forward * Vector3.Distance(_muzzle.position, _target);
             middlePoint = new Vector3((_muzzle.position.x + endPoint.x) / 2, (_muzzle.position.y + endPoint.y) / 2, (_muzzle.position.z + endPoint.z) / 2);
             _bezierCurve.point2 = middlePoint;
         }
@@ -74,7 +74,7 @@ public class PlayerShoot : MonoBehaviour
         {
             Vector3[] positions = new Vector3[_targetLine.positionCount];
             _targetLine.GetPositions(positions);
-            _currentWeapon.Shoot(_camera.transform.position, positions);
+            _currentWeapon.Shoot(_muzzle.position, positions);
         }
         if (!_currentWeapon.IsAutomatic)
         {

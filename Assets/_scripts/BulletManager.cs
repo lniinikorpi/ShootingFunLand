@@ -49,6 +49,10 @@ public class BulletManager : MonoBehaviour
             {
                 return _pathPoints;
             }
+            set
+            {
+                _pathPoints = value;
+            }
         }
         private int _pathIndex;
         public int PathIndex
@@ -74,6 +78,7 @@ public class BulletManager : MonoBehaviour
             _currentPosition = currentPosition;
             _pathPoints = pathPoints;
             _speed = speed;
+            Direction = pathPoints[1] - _currentPosition;
         }
     }
 
@@ -122,19 +127,19 @@ public class BulletManager : MonoBehaviour
             if(!CheckBulletHit(b)) {
                 if (b.PathPoints != null)
                 {
-                    if (Vector3.Distance(b.currentPosition, b.PathPoints[b.PathIndex + 1]) < .1f)
+                    if(b.PathIndex < b.PathPoints.Length - 2)
                     {
-                        if(b.PathIndex < b.PathPoints.Length - 2)
+                        if (Vector3.Distance(b.currentPosition, b.PathPoints[b.PathIndex + 1]) < .1f)
                         {
                             b.PathIndex++;
-                        }
-                        else
-                        {
-                            _bullets.Remove(b);
+
+                            b.Direction = b.PathPoints[b.PathIndex + 1] - b.currentPosition;
                         }
                     }
-
-                    b.Direction = b.PathPoints[b.PathIndex + 1] - b.currentPosition;
+                    else
+                    {
+                        b.PathPoints = null;
+                    }
                 }
                 b.currentPosition += b.Speed * Time.deltaTime * b.Direction;
             }
@@ -153,9 +158,9 @@ public class BulletManager : MonoBehaviour
             ParticleSystem.Particle particle = new ParticleSystem.Particle
             {
                 position = _bullets[i].currentPosition,
-                startColor = Color.red,
+                startColor = Color.black,
                 startLifetime = 100,
-                startSize3D = Vector3.one,
+                startSize3D = Vector3.one / 10,
                 remainingLifetime = 100
             };
             particles[i] = particle;
